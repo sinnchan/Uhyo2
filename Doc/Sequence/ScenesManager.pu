@@ -1,0 +1,33 @@
+@startuml ScenesManager
+
+box Dependents on Unity
+participant ScenesPresenter
+participant Scene
+end box
+
+activate ScenesPresenter
+
+ScenesPresenter -> ScenesManager: getObservable()
+activate ScenesManager
+return Observable
+
+ScenesPresenter -> Observable ** : listen()
+
+ScenesPresenter -> ScenesManager : init()
+activate ScenesManager
+ScenesManager -> Observable : onNext(event: showScene)
+activate Observable
+ScenesManager --> ScenesPresenter
+deactivate ScenesManager
+deactivate ScenesPresenter 
+
+deactivate ScenesManager
+Observable -->> ScenesPresenter : onNext => {}
+deactivate Observable
+activate ScenesPresenter
+ScenesPresenter -> Scene ** : showScene()
+activate Scene
+
+
+
+@enduml

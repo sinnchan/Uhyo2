@@ -1,0 +1,33 @@
+@startuml class
+
+class GameMaster {
+    -board: Board
+    -nowTurn: PieceColor
+    +gameState: GameState
+
+    putPiece(piece: Piece, )
+}
+
+enum GameState {
+    Initialized
+    Started
+    Finished
+}
+
+class Board {
+    -data: Piece[8][8]
+
+}
+
+class Piece {
+    +pieceColor: Piece
+
+    turnOver(): void
+}
+
+enum PieceColor {
+    BLACK
+    WHITE
+}
+
+@enduml
