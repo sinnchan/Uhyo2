@@ -8,4 +8,15 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2.1.0
-      - run: dotnet test
+
+      - name: Cache
+        uses: actions/cache@v2.1.4
+        with:
+          path: Library
+          key: Library
+
+      - name: Unity - Test runner
+        uses: game-ci/unity-test-runner@v2.0-alpha-2
+        with:
+          unityVersion: 2019.4.17f1
+
