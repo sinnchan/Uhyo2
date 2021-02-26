@@ -22,4 +22,3 @@ jobs:
         with:
           projectPath: ./
           unityVersion: 2019.4.17f1
-
