@@ -3,17 +3,22 @@ name: Tests
 on: push
 
 jobs:
-  activation:
-    name: Request manual activation file
+  tests:
+    name: Unit Testing
     runs-on: ubuntu-latest
     steps:
-      - name: Request manual activation file
-        id: getManualLicenseFile
-        uses: webbertakken/unity-request-manual-activation-file@v1
+      - uses: actions/checkout@v2.1.0
+
+      - name: Cache
+        uses: actions/cache@v2.1.4
         with:
+          path: Library
+          key: Library
+
+      - name: Unity - Test runner
+        uses: game-ci/unity-test-runner@v2.0-alpha-2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          projectPath: ./
           unityVersion: 2019.4.17f1
-      - name: Expose as artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: ${{ steps.getManualLicenseFile.outputs.filePath }}
-          path: ${{ steps.getManualLicenseFile.outputs.filePath }}
