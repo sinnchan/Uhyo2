@@ -1,8 +1,6 @@
 name: Tests
 
 on: push
-env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 env:
   UNITY_VERSION: 2019.4.1f1
