@@ -44,7 +44,7 @@ jobs:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Test all modes ✨
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
@@ -61,10 +61,10 @@ jobs:
         uses: webbertakken/unity-test-runner@v1
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_PROJECT_PATH: ./
+          UNITY_PROJECT_PATH: /
           TEST_MODE: editmode
         with:
-          unityVersion: 2019.4.17f1
+          unityVersion: 2019.2.2f1
           
       - uses: actions/upload-artifact@v2
         with:
