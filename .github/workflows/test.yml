@@ -61,7 +61,7 @@ jobs:
         uses: webbertakken/unity-test-runner@v1.7
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_PROJECT_PATH: ./
+          UNITY_PROJECT_PATH: /
           TEST_MODE: editmode
         with:
           unityVersion: 2019.2.11f1
