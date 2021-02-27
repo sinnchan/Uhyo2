@@ -58,10 +58,10 @@ jobs:
       # https://github.com/game-ci/unity-test-runner/releases/
       - name: Run tests
         id: testRunner
-        uses: webbertakken/unity-test-runner@v1
+        uses: webbertakken/unity-test-runner@v1.4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_PROJECT_PATH: /
+          UNITY_PROJECT_PATH: ./
           TEST_MODE: editmode
         with:
           unityVersion: 2019.2.11f1
