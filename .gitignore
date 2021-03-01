@@ -69,3 +69,13 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Packages
+/Packages/
+/[Aa]ssets/Packages/
+
+# DS_store
+*.DS_Store
+
+# intellij settings
+.idea/
