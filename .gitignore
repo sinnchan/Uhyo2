@@ -75,7 +75,7 @@ crashlytics-build.properties
 /[Aa]ssets/Packages/
 
 # DS_store
-*.DS_Store
+.DS_Store
 
 # intellij settings
 .idea/
