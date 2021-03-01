@@ -1,30 +1,27 @@
-using System;
-
 namespace Src.Main.Domain.Entities.Game
 {
     public class Position
     {
-        public const int Max = 8;
-
         public Position(int x, int y)
         {
-            if (CheckArg(x) && CheckArg(y))
-            {
-                X = x;
-                Y = y;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException();
-            }
+            X = x;
+            Y = y;
         }
 
-        public int X { get; }
-        public int Y { get; }
+        public int X { get; private set; }
+        public int Y { get; private set; }
 
-        private static bool CheckArg(int value)
+        /// <summary>
+        ///     現在の位置から指定した分移動します。
+        /// </summary>
+        /// <param name="direction">移動する方向</param>
+        /// <param name="distance">移動する距離</param>
+        /// <returns>移動後のPosition</returns>
+        public Position MoveTo(Direction direction, int distance)
         {
-            return 0 < value && value <= Max;
+            X += direction.GetDirectionValue().X * distance;
+            Y += direction.GetDirectionValue().Y * distance;
+            return this;
         }
     }
 }

@@ -4,12 +4,12 @@ namespace Src.Main.Domain.Entities.Game
 {
     public class Piece
     {
-        public Piece(PieceColor color)
+        public Piece(PieceState pieceState)
         {
-            Color = color;
+            State = pieceState;
         }
 
-        public PieceColor Color { get; private set; }
+        public PieceState State { get; private set; }
 
         /// <summary>
         ///     白のコマを作成します。
@@ -17,7 +17,7 @@ namespace Src.Main.Domain.Entities.Game
         /// <returns></returns>
         public static Piece CreateWhite()
         {
-            return new Piece(PieceColor.White);
+            return new Piece(PieceState.White);
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace Src.Main.Domain.Entities.Game
         /// <returns></returns>
         public static Piece CreateBlack()
         {
-            return new Piece(PieceColor.Black);
+            return new Piece(PieceState.Black);
         }
 
         /// <summary>
@@ -35,17 +35,28 @@ namespace Src.Main.Domain.Entities.Game
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void TurnOver()
         {
-            switch (Color)
+            switch (State)
             {
-                case PieceColor.Black:
-                    Color = PieceColor.White;
+                case PieceState.Black:
+                    State = PieceState.White;
                     break;
-                case PieceColor.White:
-                    Color = PieceColor.Black;
+                case PieceState.White:
+                    State = PieceState.Black;
+                    break;
+                case PieceState.Space:
+                    // do nothing...
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        /// <summary>
+        ///     Pieceを空白に転生させます。
+        /// </summary>
+        public void Clear()
+        {
+            State = PieceState.Space;
         }
     }
 }

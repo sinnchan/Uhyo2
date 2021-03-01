@@ -1,14 +1,18 @@
 using System;
 using System.Linq;
-using JetBrains.Annotations;
 
 namespace Src.Main.Domain.Entities.Game
 {
     public class Board
     {
+        public const int Length = 8;
+        public const int Max = Length * Length;
+        private readonly Piece[,] _data;
+
         public Board()
         {
-            Data = new Piece[8, 8];
+            _data = new Piece[Length, Length];
+            LoopAccessAll(p => { _data[p.Y, p.X] = new Piece(PieceState.Space); });
         }
 
         /// <summary>
@@ -18,18 +22,21 @@ namespace Src.Main.Domain.Entities.Game
         /// <param name="data"></param>
         public Board(Piece[,] data)
         {
-            Data = data;
+            _data = data;
         }
-
-        [ItemCanBeNull] public Piece[,] Data { get; }
 
         /// <summary>
         ///     盤面すべてループして渡したActionを実行します。
         /// </summary>
         /// <param name="action">x, y</param>
-        public static void LoopAccessAll(Action<int, int> action)
+        public static void LoopAccessAll(Action<BoardPosition> action)
         {
-            for (var i = 0; i < Math.Pow(Position.Max, 2); i++) action(i % Position.Max, i / Position.Max);
+            for (var i = 0; i < Max; i++) action(new BoardPosition(i % Length, i / Length));
+        }
+
+        public Piece GetPiece(BoardPosition position)
+        {
+            return _data[position.Y, position.X];
         }
 
         /// <summary>
@@ -37,7 +44,7 @@ namespace Src.Main.Domain.Entities.Game
         /// </summary>
         public void Clear()
         {
-            LoopAccessAll((x, y) => { Data[y, x] = null; });
+            LoopAccessAll(p => _data[p.Y, p.X].Clear());
         }
 
         /// <summary>
@@ -46,7 +53,7 @@ namespace Src.Main.Domain.Entities.Game
         /// <returns></returns>
         public bool IsEmpty()
         {
-            return Data.Cast<Piece>().All(piece => piece == null);
+            return _data.Cast<Piece>().All(piece => piece.State == PieceState.Space);
         }
 
         /// <summary>
@@ -55,26 +62,27 @@ namespace Src.Main.Domain.Entities.Game
         /// <returns></returns>
         public bool IsFull()
         {
-            return Data.Cast<Piece>().All(piece => piece != null);
+            return _data.Cast<Piece>().All(piece => piece.State != PieceState.Space);
         }
 
         /// <summary>
         ///     指定した場所にコマを置きます。
         /// </summary>
-        /// <param name="piece"></param>
-        /// <param name="position"></param>
-        public void PlacePiece(Piece piece, Position position)
+        /// <param name="piece">コマ</param>
+        /// <param name="position">1 ~ 8を入れる仕様</param>
+        public void PlacePiece(Piece piece, BoardPosition position)
         {
-            Data[position.Y, position.X] = piece;
+            _data[position.Y, position.X] = piece;
         }
 
         /// <summary>
-        ///     盤面に存在するコマを数えます。
+        ///     指定のコマを数えます。
         /// </summary>
-        /// <returns></returns>
-        public int CountPiece()
+        /// <param name="pieceState">カウントするコマ</param>
+        /// <returns>カウント結果</returns>
+        public int Count(PieceState pieceState)
         {
-            return Data.Cast<Piece>().Count(piece => piece != null);
+            return _data.Cast<Piece>().Count(piece => piece.State == pieceState);
         }
     }
 }
