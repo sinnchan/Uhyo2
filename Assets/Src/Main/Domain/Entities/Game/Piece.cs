@@ -58,5 +58,20 @@ namespace Src.Main.Domain.Entities.Game
         {
             State = PieceState.Space;
         }
+
+        public override string ToString()
+        {
+            switch (State)
+            {
+                case PieceState.Black:
+                    return "●";
+                case PieceState.White:
+                    return "○";
+                case PieceState.Space:
+                    return ".";
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
     }
 }

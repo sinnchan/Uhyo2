@@ -84,5 +84,19 @@ namespace Src.Main.Domain.Entities.Game
         {
             return _data.Cast<Piece>().Count(piece => piece.State == pieceState);
         }
+
+        public string VisualizeData()
+        {
+            var cache = "";
+            var result = "";
+            LoopAccessAll(p =>
+            {
+                cache += _data[p.Y, p.X].ToString();
+                if (p.X != Length - 1) return;
+                result += cache + Environment.NewLine;
+                cache = "";
+            });
+            return result;
+        }
     }
 }

@@ -1,11 +1,20 @@
 using System;
+using NLog;
 using Src.Main.Domain.Entities.Game;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Src.Test.Domain.Entity.Game
 {
     public class TestBoard
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public TestBoard(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         [Fact]
         public void IsEmptyTest()
         {
@@ -56,7 +65,6 @@ namespace Src.Test.Domain.Entity.Game
         public void CountPieceTest()
         {
             var board = new Board();
-            var position = new BoardPosition(10, 10);
             Assert.Equal(Math.Pow(Board.Length, 2), board.Count(PieceState.Space));
         }
     }

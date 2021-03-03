@@ -57,23 +57,16 @@ namespace Src.Main.Domain.Entities.Game
         ///     駒の置ける場所を返します。
         /// </summary>
         /// <returns></returns>
-        public List<Position> GetSuggestPositions()
+        public List<BoardPosition> GetSuggestPositions()
         {
-            var suggestList = new List<Position>();
+            var suggestList = new List<BoardPosition>();
             Board.LoopAccessAll(p =>
             {
                 if (_board.GetPiece(p).State != PieceState.Space) return;
-                var targetDirection = FindTargetDirection(p);
-                suggestList.AddRange
-                (
-                    from direction in targetDirection
-                    select ScanToDirection(p, direction)
-                    into qty
-                    where 0 < qty
-                    select p
-                );
+                if (FindTargetDirection(p).Any(direction => 0 < ScanToDirection(p, direction)))
+                    suggestList.Add(p);
             });
-            return null;
+            return suggestList;
         }
 
         /// <summary>
@@ -85,20 +78,20 @@ namespace Src.Main.Domain.Entities.Game
         /// <returns></returns>
         private int ScanToDirection(BoardPosition position, Direction direction)
         {
-            //todo
-            return 0;
-        }
+            var pointer = position;
+            var count = 0;
+            while (true)
+            {
+                var result = pointer.MoveTo(direction, 1);
+                if (!result.valid) return 0;
+                pointer = result.data;
+                var pointerState = _board.GetPiece(pointer).State;
+                if (pointerState == PieceState.Space) return 0;
+                if (pointerState == _nowTurn) break;
+                count++;
+            }
 
-        /// <summary>
-        ///     次のポインターを返します。
-        ///     次がない場合はvalidでfalseを返します。
-        /// </summary>
-        /// <param name="current"></param>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        private static Result<BoardPosition> GetNextPointer(BoardPosition current, Direction target)
-        {
-            return current.MoveTo(target, 1);
+            return count;
         }
 
         /// <summary>
