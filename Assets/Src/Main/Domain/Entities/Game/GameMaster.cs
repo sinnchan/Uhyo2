@@ -36,7 +36,7 @@ namespace Src.Main.Domain.Entities.Game
             _nowTurn = (Board.Max - _board.Count(PieceState.Space)) % 2 == 0
                 ? PieceState.Black
                 : PieceState.White;
-            GameEndFlag = board.IsFull(); //todo game終了判定が必要
+            GameEndFlag = ConfirmGameEnd();
         }
 
         public bool GameEndFlag { get; }
@@ -67,6 +67,17 @@ namespace Src.Main.Domain.Entities.Game
                     suggestList.Add(p);
             });
             return suggestList;
+        }
+
+        /// <summary>
+        /// ゲーム終了の判定
+        /// </summary>
+        /// <returns></returns>
+        private bool ConfirmGameEnd()
+        {
+            return _board.IsFull()
+                   || _board.Count(PieceState.Black) == 0
+                   || _board.Count(PieceState.White) == 0;
         }
 
         /// <summary>
