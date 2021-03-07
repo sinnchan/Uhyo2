@@ -4,19 +4,10 @@ namespace Src.Test
 {
     public class TestUtil
     {
-        public static Piece B
-        {
-            get => Piece.CreateBlack();
-        }
+        public static Piece B => Piece.CreateBlack();
 
-        public static Piece W
-        {
-            get => Piece.CreateWhite();
-        }
+        public static Piece W => Piece.CreateWhite();
 
-        public static Piece _
-        {
-            get => new Piece(PieceState.Space);
-        }
+        public static Piece _ => new Piece(PieceState.Space);
     }
 }

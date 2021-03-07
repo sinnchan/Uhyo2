@@ -23,9 +23,9 @@ namespace Src.Main.Domain.Entities.Game
             Y += direction.GetDirectionValue().Y * distance;
             return this;
         }
-        
+
         /// <summary>
-        /// 同じ場所であるか確認します。
+        ///     同じ場所であるか確認します。
         /// </summary>
         public bool IsEqualTo(Position position)
         {

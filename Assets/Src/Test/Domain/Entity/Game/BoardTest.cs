@@ -1,5 +1,4 @@
 using System;
-using NLog;
 using Src.Main.Domain.Entities.Game;
 using Xunit;
 using Xunit.Abstractions;

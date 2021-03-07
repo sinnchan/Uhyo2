@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Src.Main.Domain.Entities.Game;
 using Src.Test.Util;
@@ -19,9 +18,7 @@ namespace Src.Test.Domain.Entity.Game
             //リストのもっとスマートなアサーション無いの…？
             Assert.Equal(expected.Count, actual.Count);
             for (var i = 0; i < expected.Count; i++)
-            {
                 Assert.True(expected[i].IsEqualTo(actual[i]), $"expected{expected[i]} : actual{actual[i]}");
-            }
         }
 
         [Theory]
@@ -40,13 +37,11 @@ namespace Src.Test.Domain.Entity.Game
             Assert.True(placeResult.valid);
             Assert.Equal(expectedPositions.Count, placeResult.data.Count);
             foreach (var boardPosition in placeResult.data)
-            {
                 Assert.True(expectedPositions.Exists(position => position.IsEqualTo(boardPosition)));
-            }
 
             Assert.Equal(expectedBoard.VisualizeData(), actual.VisualizeData());
         }
-        
+
         [Theory]
         [ClassData(typeof(PlaceErrorTestData))]
         public void PlaceErrorTest(
@@ -63,7 +58,7 @@ namespace Src.Test.Domain.Entity.Game
             Assert.Equal(testBoard.VisualizeData(), actual.VisualizeData());
         }
     }
-    
+
     public class GetSuggestPositionsTestData : AbstractTestData
     {
         public GetSuggestPositionsTestData()
@@ -207,7 +202,7 @@ namespace Src.Test.Domain.Entity.Game
                     new BoardPosition(6, 6),
                     new BoardPosition(7, 6),
                     new BoardPosition(3, 7),
-                    new BoardPosition(4, 7),
+                    new BoardPosition(4, 7)
                 }
             });
             _testData.Add(new object[]
@@ -234,7 +229,7 @@ namespace Src.Test.Domain.Entity.Game
                     new BoardPosition(3, 1),
                     new BoardPosition(4, 1),
                     new BoardPosition(0, 2),
-                    new BoardPosition(3, 2),
+                    new BoardPosition(3, 2)
                 }
             });
         }
@@ -305,7 +300,7 @@ namespace Src.Test.Domain.Entity.Game
                 {
                     new BoardPosition(2, 3),
                     new BoardPosition(1, 4),
-                    new BoardPosition(1, 5),
+                    new BoardPosition(1, 5)
                 }
             });
             _testData.Add(new object[]

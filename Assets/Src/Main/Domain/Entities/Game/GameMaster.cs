@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO.Pipes;
 using System.Linq;
 
 namespace Src.Main.Domain.Entities.Game
@@ -25,8 +24,8 @@ namespace Src.Main.Domain.Entities.Game
         /// <param name="board"></param>
         public GameMaster(Board board)
         {
-            this._board = board;
-            if (this._board.IsEmpty())
+            _board = board;
+            if (_board.IsEmpty())
             {
                 GameInit();
                 GameEndFlag = false;
@@ -34,7 +33,7 @@ namespace Src.Main.Domain.Entities.Game
             }
 
             // コマの数が偶数なら黒のターン。奇数なら代のターン。
-            _nowTurn = (Board.Max - this._board.Count(PieceState.Space)) % 2 == 0
+            _nowTurn = (Board.Max - _board.Count(PieceState.Space)) % 2 == 0
                 ? PieceState.Black
                 : PieceState.White;
             GameEndFlag = ConfirmGameEnd();
@@ -73,6 +72,7 @@ namespace Src.Main.Domain.Entities.Game
                 if (turnablePosition.Count <= 0) continue;
                 turnOverPosition.AddRange(turnablePosition);
             }
+
             foreach (var boardPosition in turnOverPosition)
                 _board.GetPiece(boardPosition).TurnOver();
 
@@ -95,13 +95,16 @@ namespace Src.Main.Domain.Entities.Game
         }
 
         /// <summary>
-        /// 参照渡ししてclear()されると悲しいのでコピーを渡す。
+        ///     参照渡ししてclear()されると悲しいのでコピーを渡す。
         /// </summary>
         /// <returns></returns>
-        public Board GetBoardData() => _board.CreateCopy();
+        public Board GetBoardData()
+        {
+            return _board.CreateCopy();
+        }
 
         /// <summary>
-        /// 指定の位置が駒を置けるのかを確かめる。
+        ///     指定の位置が駒を置けるのかを確かめる。
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
@@ -112,7 +115,7 @@ namespace Src.Main.Domain.Entities.Game
         }
 
         /// <summary>
-        /// ゲーム終了の判定
+        ///     ゲーム終了の判定
         /// </summary>
         /// <returns></returns>
         private bool ConfirmGameEnd()
