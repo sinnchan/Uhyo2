@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO.Pipes;
 using System.Linq;
 
 namespace Src.Main.Domain.Entities.Game
@@ -24,8 +25,8 @@ namespace Src.Main.Domain.Entities.Game
         /// <param name="board"></param>
         public GameMaster(Board board)
         {
-            _board = board;
-            if (_board.IsEmpty())
+            this._board = board;
+            if (this._board.IsEmpty())
             {
                 GameInit();
                 GameEndFlag = false;
@@ -33,7 +34,7 @@ namespace Src.Main.Domain.Entities.Game
             }
 
             // コマの数が偶数なら黒のターン。奇数なら代のターン。
-            _nowTurn = (Board.Max - _board.Count(PieceState.Space)) % 2 == 0
+            _nowTurn = (Board.Max - this._board.Count(PieceState.Space)) % 2 == 0
                 ? PieceState.Black
                 : PieceState.White;
             GameEndFlag = ConfirmGameEnd();
@@ -53,6 +54,31 @@ namespace Src.Main.Domain.Entities.Game
             _board.PlacePiece(Piece.CreateWhite(), new BoardPosition(4, 4));
         }
 
+        public Result<List<BoardPosition>> Place(Piece piece, BoardPosition position)
+        {
+            // ターンの駒でない場合、
+            // 置き場が空白でない場合、
+            // ひっくり返せない場合はエラー。
+            if (_nowTurn != piece.State
+                || _board.GetPiece(position).State != PieceState.Space
+                || !ConfirmPlaceablePosition(position))
+                return new Result<List<BoardPosition>>(null, false);
+
+            var turnOverPosition = new List<BoardPosition>();
+
+            _board.PlacePiece(piece, position);
+            foreach (var direction in FindTargetDirection(position))
+            {
+                var turnablePosition = ScanToDirection(position, direction);
+                if (turnablePosition.Count <= 0) continue;
+                turnOverPosition.AddRange(turnablePosition);
+            }
+            foreach (var boardPosition in turnOverPosition)
+                _board.GetPiece(boardPosition).TurnOver();
+
+            return new Result<List<BoardPosition>>(turnOverPosition, true);
+        }
+
         /// <summary>
         ///     駒の置ける場所を返します。
         /// </summary>
@@ -62,11 +88,27 @@ namespace Src.Main.Domain.Entities.Game
             var suggestList = new List<BoardPosition>();
             Board.LoopAccessAll(p =>
             {
-                if (_board.GetPiece(p).State != PieceState.Space) return;
-                if (FindTargetDirection(p).Any(direction => 0 < ScanToDirection(p, direction)))
+                if (ConfirmPlaceablePosition(p))
                     suggestList.Add(p);
             });
             return suggestList;
+        }
+
+        /// <summary>
+        /// 参照渡ししてclear()されると悲しいのでコピーを渡す。
+        /// </summary>
+        /// <returns></returns>
+        public Board GetBoardData() => _board.CreateCopy();
+
+        /// <summary>
+        /// 指定の位置が駒を置けるのかを確かめる。
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        private bool ConfirmPlaceablePosition(BoardPosition p)
+        {
+            return _board.GetPiece(p).State == PieceState.Space
+                   && FindTargetDirection(p).Any(direction => 0 < ScanToDirection(p, direction).Count);
         }
 
         /// <summary>
@@ -82,27 +124,27 @@ namespace Src.Main.Domain.Entities.Game
 
         /// <summary>
         ///     指定の位置から指定の方向へスキャンし
-        ///     裏返せるコマの数を調べます。
+        ///     裏返せるコマの座標を返します。
         /// </summary>
         /// <param name="position">駒を置く位置</param>
         /// <param name="direction">確認する方向</param>
         /// <returns></returns>
-        private int ScanToDirection(BoardPosition position, Direction direction)
+        private List<BoardPosition> ScanToDirection(BoardPosition position, Direction direction)
         {
             var pointer = position;
-            var count = 0;
+            var turnableList = new List<BoardPosition>();
             while (true)
             {
                 var result = pointer.MoveTo(direction, 1);
-                if (!result.valid) return 0;
+                if (!result.valid) return new List<BoardPosition>();
                 pointer = result.data;
                 var pointerState = _board.GetPiece(pointer).State;
-                if (pointerState == PieceState.Space) return 0;
+                if (pointerState == PieceState.Space) return new List<BoardPosition>();
                 if (pointerState == _nowTurn) break;
-                count++;
+                turnableList.Add(pointer);
             }
 
-            return count;
+            return turnableList;
         }
 
         /// <summary>

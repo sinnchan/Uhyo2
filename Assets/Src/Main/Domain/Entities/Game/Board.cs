@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using NLog.LayoutRenderers;
 
 namespace Src.Main.Domain.Entities.Game
 {
@@ -24,6 +25,12 @@ namespace Src.Main.Domain.Entities.Game
         {
             _data = data;
         }
+
+        /// <summary>
+        /// ボードのコピーを返します。
+        /// </summary>
+        /// <returns></returns>
+        public Board CreateCopy() => new Board(_data);
 
         /// <summary>
         ///     盤面すべてループして渡したActionを実行します。
