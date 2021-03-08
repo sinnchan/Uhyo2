@@ -22,20 +22,18 @@ namespace Src.Main.Domain.Entities.Game
         ///     もしかしたらロード機能で使うかも
         /// </summary>
         /// <param name="board"></param>
-        public GameMaster(Board board)
+        /// <param name="turn"></param>
+        public GameMaster(Board board, PieceState turn)
         {
             _board = board;
+            _nowTurn = turn;
             if (_board.IsEmpty())
             {
                 GameInit();
                 GameEndFlag = false;
                 return;
             }
-
-            // コマの数が偶数なら黒のターン。奇数なら代のターン。
-            _nowTurn = (Board.Max - _board.Count(PieceState.Space)) % 2 == 0
-                ? PieceState.Black
-                : PieceState.White;
+            
             GameEndFlag = ConfirmGameEnd();
         }
 
@@ -76,6 +74,9 @@ namespace Src.Main.Domain.Entities.Game
             foreach (var boardPosition in turnOverPosition)
                 _board.GetPiece(boardPosition).TurnOver();
 
+            // ターン切り替え
+            ChangeTurn();
+
             return new Result<List<BoardPosition>>(turnOverPosition, true);
         }
 
@@ -101,6 +102,11 @@ namespace Src.Main.Domain.Entities.Game
         public Board GetBoardData()
         {
             return _board.CreateCopy();
+        }
+
+        private void ChangeTurn()
+        {
+            
         }
 
         /// <summary>

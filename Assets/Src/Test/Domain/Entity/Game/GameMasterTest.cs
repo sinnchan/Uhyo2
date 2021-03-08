@@ -10,9 +10,9 @@ namespace Src.Test.Domain.Entity.Game
     {
         [Theory]
         [ClassData(typeof(GetSuggestPositionsTestData))]
-        public void GetSuggestPositionsTest(Board board, List<BoardPosition> expected)
+        public void GetSuggestPositionsTest(PieceState turn, Board board, List<BoardPosition> expected)
         {
-            var gameMaster = new GameMaster(board);
+            var gameMaster = new GameMaster(board, turn);
             var actual = gameMaster.GetSuggestPositions();
 
             //リストのもっとスマートなアサーション無いの…？
@@ -24,13 +24,14 @@ namespace Src.Test.Domain.Entity.Game
         [Theory]
         [ClassData(typeof(PlaceTestData))]
         public void PlaceTest(
+            PieceState turn,
             Piece piece,
             BoardPosition placePosition,
             Board testBoard,
             Board expectedBoard,
             List<BoardPosition> expectedPositions)
         {
-            var gameMaster = new GameMaster(testBoard);
+            var gameMaster = new GameMaster(testBoard, turn);
             var placeResult = gameMaster.Place(piece, placePosition);
             var actual = gameMaster.GetBoardData();
 
@@ -45,11 +46,12 @@ namespace Src.Test.Domain.Entity.Game
         [Theory]
         [ClassData(typeof(PlaceErrorTestData))]
         public void PlaceErrorTest(
+            PieceState turn,
             Piece piece,
             BoardPosition placePosition,
             Board testBoard)
         {
-            var gameMaster = new GameMaster(testBoard);
+            var gameMaster = new GameMaster(testBoard, turn);
             var placeResult = gameMaster.Place(piece, placePosition);
             var actual = gameMaster.GetBoardData();
 
@@ -66,6 +68,7 @@ namespace Src.Test.Domain.Entity.Game
             // 黒のターンで置ける場所テスト
             _testData.Add(new object[]
             {
+                PieceState.Black, 
                 new Board(new[,]
                 {
                     {_, _, _, _, _, _, _, _},
@@ -87,6 +90,7 @@ namespace Src.Test.Domain.Entity.Game
             });
             _testData.Add(new object[]
             {
+                PieceState.Black, 
                 new Board(new[,]
                 {
                     {_, _, _, _, _, _, _, _},
@@ -113,6 +117,7 @@ namespace Src.Test.Domain.Entity.Game
             });
             _testData.Add(new object[]
             {
+                PieceState.Black, 
                 new Board(new[,]
                 {
                     {B, _, W, _, _, _, _, _},
@@ -150,6 +155,7 @@ namespace Src.Test.Domain.Entity.Game
             // 白のターンで置ける場所テスト
             _testData.Add(new object[]
             {
+                PieceState.White,
                 new Board(new[,]
                 {
                     {_, _, _, _, _, _, _, _},
@@ -175,6 +181,7 @@ namespace Src.Test.Domain.Entity.Game
             });
             _testData.Add(new object[]
             {
+                PieceState.White,
                 new Board(new[,]
                 {
                     {_, _, _, _, _, _, _, _},
@@ -207,6 +214,7 @@ namespace Src.Test.Domain.Entity.Game
             });
             _testData.Add(new object[]
             {
+                PieceState.White,
                 new Board(new[,]
                 {
                     {_, _, _, _, _, _, _, _},
@@ -241,6 +249,7 @@ namespace Src.Test.Domain.Entity.Game
         {
             _testData.Add(new object[]
             {
+                PieceState.Black,
                 Piece.CreateBlack(),
                 new BoardPosition(3, 2),
                 new Board(new[,]
@@ -272,6 +281,7 @@ namespace Src.Test.Domain.Entity.Game
             });
             _testData.Add(new object[]
             {
+                PieceState.Black,
                 Piece.CreateBlack(),
                 new BoardPosition(0, 5),
                 new Board(new[,]
@@ -305,6 +315,7 @@ namespace Src.Test.Domain.Entity.Game
             });
             _testData.Add(new object[]
             {
+                PieceState.White,
                 Piece.CreateWhite(),
                 new BoardPosition(3, 2),
                 new Board(new[,]
@@ -347,6 +358,7 @@ namespace Src.Test.Domain.Entity.Game
         {
             _testData.Add(new object[]
             {
+                PieceState.Black,
                 Piece.CreateWhite(),
                 new BoardPosition(3, 2),
                 new Board(new[,]
@@ -363,6 +375,7 @@ namespace Src.Test.Domain.Entity.Game
             });
             _testData.Add(new object[]
             {
+                PieceState.Black,
                 Piece.CreateBlack(),
                 new BoardPosition(2, 2),
                 new Board(new[,]
@@ -379,7 +392,8 @@ namespace Src.Test.Domain.Entity.Game
             });
             _testData.Add(new object[]
             {
-                Piece.CreateWhite(),
+                PieceState.Black,
+                Piece.CreateBlack(),
                 new BoardPosition(5, 3),
                 new Board(new[,]
                 {
