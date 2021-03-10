@@ -7,7 +7,7 @@ namespace Src.Main.Domain.Entities.Game
     public class GameMaster
     {
         private readonly Board _board;
-        private readonly PieceState _nowTurn;
+        private PieceState _nowTurn;
 
         public GameMaster()
         {
@@ -104,9 +104,16 @@ namespace Src.Main.Domain.Entities.Game
             return _board.CreateCopy();
         }
 
+        /// <summary>
+        /// ターン交代します。
+        /// スキップならターン交代しない
+        /// </summary>
         private void ChangeTurn()
         {
-            
+            var previousTurn = _nowTurn;
+            _nowTurn = _nowTurn.Opposite();
+            if (GetSuggestPositions().Count <= 0)
+                _nowTurn = previousTurn;
         }
 
         /// <summary>
