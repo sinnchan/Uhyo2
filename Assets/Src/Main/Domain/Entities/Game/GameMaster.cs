@@ -51,6 +51,12 @@ namespace Src.Main.Domain.Entities.Game
             _board.PlacePiece(Piece.CreateWhite(), new BoardPosition(4, 4));
         }
 
+        /// <summary>
+        /// 駒を置きます。
+        /// </summary>
+        /// <param name="piece"></param>
+        /// <param name="position"></param>
+        /// <returns>裏返した駒の位置</returns>
         public Result<List<BoardPosition>> Place(Piece piece, BoardPosition position)
         {
             // ターンの駒でない場合、
