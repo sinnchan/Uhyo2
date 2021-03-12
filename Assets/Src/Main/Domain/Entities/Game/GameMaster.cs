@@ -33,11 +33,11 @@ namespace Src.Main.Domain.Entities.Game
                 GameEndFlag = false;
                 return;
             }
-            
+
             GameEndFlag = ConfirmGameEnd();
         }
 
-        public bool GameEndFlag { get; }
+        public bool GameEndFlag { get; private set; }
 
         /// <summary>
         ///     盤面初期化処理
@@ -52,7 +52,7 @@ namespace Src.Main.Domain.Entities.Game
         }
 
         /// <summary>
-        /// 駒を置きます。
+        ///     駒を置きます。
         /// </summary>
         /// <param name="piece"></param>
         /// <param name="position"></param>
@@ -80,11 +80,24 @@ namespace Src.Main.Domain.Entities.Game
             foreach (var boardPosition in turnOverPosition)
                 _board.GetPiece(boardPosition).TurnOver();
 
-            // todo 両者おけないならゲーム終了
-            // todo 次のターンの人が置けないならスキップ
-            // todo 次のターンの人が置けるならターンを変えて続行
+            // 次のターンの人が置けるならターンを変えて続行
+            if (CanBePlaced(_nowTurn.Opposite()))
+                _nowTurn = _nowTurn.Opposite();
+            // 次のターンの人が置けないならスキップ(ターンはそのまま)
+            // 両者おけないならゲーム終了
+            else if (!CanBePlaced(_nowTurn)) GameEndFlag = true;
 
             return new Result<List<BoardPosition>>(turnOverPosition, true);
+        }
+
+        /// <summary>
+        ///     指定したターンの人が置けるか確認します
+        /// </summary>
+        /// <param name="turn"></param>
+        /// <returns></returns>
+        public bool CanBePlaced(PieceState turn)
+        {
+            return 0 < GetSuggestPositions(turn).Count;
         }
 
         /// <summary>
