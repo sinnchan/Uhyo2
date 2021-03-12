@@ -1,4 +1,5 @@
 using System;
+using System.Net.Mail;
 
 namespace Src.Main.Domain.Entities.Game
 {
@@ -31,6 +32,11 @@ namespace Src.Main.Domain.Entities.Game
                 default:
                     throw new ArgumentOutOfRangeException(nameof(state), state, null);
             }
+        }
+
+        public static bool IsOppositeTo(this PieceState state, PieceState target)
+        {
+            return state != PieceState.Space && state != target;
         }
     }
 }

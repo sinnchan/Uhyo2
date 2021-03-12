@@ -64,15 +64,15 @@ namespace Src.Main.Domain.Entities.Game
             // ひっくり返せない場合はエラー。
             if (_nowTurn != piece.State
                 || _board.GetPiece(position).State != PieceState.Space
-                || !ConfirmPlaceablePosition(position))
+                || !ConfirmPlaceablePosition(_nowTurn, position))
                 return new Result<List<BoardPosition>>(null, false);
 
             var turnOverPosition = new List<BoardPosition>();
 
             _board.PlacePiece(piece, position);
-            foreach (var direction in FindTargetDirection(position))
+            foreach (var direction in FindTargetDirection(_nowTurn, position))
             {
-                var turnablePosition = ScanToDirection(position, direction);
+                var turnablePosition = ScanToDirection(_nowTurn, position, direction);
                 if (turnablePosition.Count <= 0) continue;
                 turnOverPosition.AddRange(turnablePosition);
             }
@@ -80,8 +80,9 @@ namespace Src.Main.Domain.Entities.Game
             foreach (var boardPosition in turnOverPosition)
                 _board.GetPiece(boardPosition).TurnOver();
 
-            // ターン切り替え
-            ChangeTurn();
+            // todo 両者おけないならゲーム終了
+            // todo 次のターンの人が置けないならスキップ
+            // todo 次のターンの人が置けるならターンを変えて続行
 
             return new Result<List<BoardPosition>>(turnOverPosition, true);
         }
@@ -90,12 +91,12 @@ namespace Src.Main.Domain.Entities.Game
         ///     駒の置ける場所を返します。
         /// </summary>
         /// <returns></returns>
-        public List<BoardPosition> GetSuggestPositions()
+        public List<BoardPosition> GetSuggestPositions(PieceState turn)
         {
             var suggestList = new List<BoardPosition>();
             Board.LoopAccessAll(p =>
             {
-                if (ConfirmPlaceablePosition(p))
+                if (ConfirmPlaceablePosition(turn, p))
                     suggestList.Add(p);
             });
             return suggestList;
@@ -111,26 +112,15 @@ namespace Src.Main.Domain.Entities.Game
         }
 
         /// <summary>
-        /// ターン交代します。
-        /// スキップならターン交代しない
-        /// </summary>
-        private void ChangeTurn()
-        {
-            var previousTurn = _nowTurn;
-            _nowTurn = _nowTurn.Opposite();
-            if (GetSuggestPositions().Count <= 0)
-                _nowTurn = previousTurn;
-        }
-
-        /// <summary>
         ///     指定の位置が駒を置けるのかを確かめる。
         /// </summary>
+        /// <param name="turn">ターンの指定</param>
         /// <param name="p"></param>
         /// <returns></returns>
-        private bool ConfirmPlaceablePosition(BoardPosition p)
+        private bool ConfirmPlaceablePosition(PieceState turn, BoardPosition p)
         {
             return _board.GetPiece(p).State == PieceState.Space
-                   && FindTargetDirection(p).Any(direction => 0 < ScanToDirection(p, direction).Count);
+                   && FindTargetDirection(turn, p).Any(direction => 0 < ScanToDirection(turn, p, direction).Count);
         }
 
         /// <summary>
@@ -148,10 +138,11 @@ namespace Src.Main.Domain.Entities.Game
         ///     指定の位置から指定の方向へスキャンし
         ///     裏返せるコマの座標を返します。
         /// </summary>
+        /// <param name="turn">ターン指定</param>
         /// <param name="position">駒を置く位置</param>
         /// <param name="direction">確認する方向</param>
         /// <returns></returns>
-        private List<BoardPosition> ScanToDirection(BoardPosition position, Direction direction)
+        private List<BoardPosition> ScanToDirection(PieceState turn, BoardPosition position, Direction direction)
         {
             var pointer = position;
             var turnableList = new List<BoardPosition>();
@@ -162,7 +153,7 @@ namespace Src.Main.Domain.Entities.Game
                 pointer = result.data;
                 var pointerState = _board.GetPiece(pointer).State;
                 if (pointerState == PieceState.Space) return new List<BoardPosition>();
-                if (pointerState == _nowTurn) break;
+                if (pointerState == turn) break;
                 turnableList.Add(pointer);
             }
 
@@ -172,9 +163,10 @@ namespace Src.Main.Domain.Entities.Game
         /// <summary>
         ///     指定したPositionの周りに相手の駒があるか調べます。
         /// </summary>
+        /// <param name="turn">ターン指定</param>
         /// <param name="position">調べたい位置</param>
         /// <returns>相手の駒がある方向のリスト</returns>
-        private IEnumerable<Direction> FindTargetDirection(BoardPosition position)
+        private IEnumerable<Direction> FindTargetDirection(PieceState turn, BoardPosition position)
         {
             return
             (
@@ -182,19 +174,9 @@ namespace Src.Main.Domain.Entities.Game
                 let targetPointer = position.MoveTo(direction, 1)
                 where targetPointer.valid
                 let pointerPieceState = _board.GetPiece(targetPointer.data).State
-                where ConfirmOpponentPiece(pointerPieceState)
+                where pointerPieceState.IsOppositeTo(turn)
                 select direction
             ).ToList();
-        }
-
-        /// <summary>
-        ///     相手の駒かどうか確認する
-        /// </summary>
-        /// <param name="state"></param>
-        /// <returns></returns>
-        private bool ConfirmOpponentPiece(PieceState state)
-        {
-            return state != PieceState.Space && state != _nowTurn;
         }
     }
 }
