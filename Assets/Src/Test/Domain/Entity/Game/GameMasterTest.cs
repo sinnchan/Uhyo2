@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using Src.Main.Domain.Entities.Game;
 using Src.Test.Util;
-using UnityEditor.VersionControl;
 using Xunit;
 using static Src.Test.TestUtil;
 
@@ -65,30 +64,20 @@ namespace Src.Test.Domain.Entity.Game
         /// <summary>
         /// 最短全白テスト
         /// </summary>
-        [Fact(Skip = "未実装のため一旦スキップ")]
-        public void PlayTest1()
+        [Theory]
+        [ClassData(typeof(GamePlayTestData))]
+        public void PlayTest1(List<(Piece piece, BoardPosition position)> gameProgressList)
         {
             var gameMaster = new GameMaster();
-            var gameProgress = new List<(Piece piece, BoardPosition position)>
+            foreach (var progress in gameProgressList)
             {
-                (Piece.CreateBlack(), new BoardPosition(5, 4)),
-                (Piece.CreateWhite(), new BoardPosition(5, 5)),
-                (Piece.CreateBlack(), new BoardPosition(4, 5)),
-                (Piece.CreateWhite(), new BoardPosition(5, 3)),
-                (Piece.CreateBlack(), new BoardPosition(4, 2)),
-                (Piece.CreateWhite(), new BoardPosition(3, 1)),
-                (Piece.CreateBlack(), new BoardPosition(3, 2)),
-                (Piece.CreateWhite(), new BoardPosition(3, 5)),
-                (Piece.CreateBlack(), new BoardPosition(2, 3)),
-                (Piece.CreateWhite(), new BoardPosition(1, 3))
-            };
-            foreach (var (piece, position) in gameProgress)
-            {
-                var result = gameMaster.Place(piece, position);
-                Assert.True(result.valid);
+                var result = gameMaster.Place(progress.piece, progress.position);
+                Assert.True(result.valid, progress.ToString());
+                if (progress != gameProgressList.Last())
+                    Assert.False(gameMaster.GameEndFlag);
+                else
+                    Assert.True(gameMaster.GameEndFlag);
             }
-            
-            Assert.True(gameMaster.GameEndFlag);
         }
     }
 
@@ -437,6 +426,113 @@ namespace Src.Test.Domain.Entity.Game
                     {_, _, _, _, _, _, _, _},
                     {_, _, _, _, _, _, _, _}
                 })
+            });
+        }
+    }
+
+    public class GamePlayTestData : AbstractTestData
+    {
+        public GamePlayTestData()
+        {
+            _testData.Add(new object[]
+            {
+                // 全部白で終了
+                new List<(Piece piece, BoardPosition position)>
+                {
+                    (Piece.CreateBlack(), new BoardPosition(5, 4)),
+                    (Piece.CreateWhite(), new BoardPosition(5, 5)),
+                    (Piece.CreateBlack(), new BoardPosition(4, 5)),
+                    (Piece.CreateWhite(), new BoardPosition(5, 3)),
+                    (Piece.CreateBlack(), new BoardPosition(4, 2)),
+                    (Piece.CreateWhite(), new BoardPosition(3, 1)),
+                    (Piece.CreateBlack(), new BoardPosition(3, 2)),
+                    (Piece.CreateWhite(), new BoardPosition(3, 5)),
+                    (Piece.CreateBlack(), new BoardPosition(2, 3)),
+                    (Piece.CreateWhite(), new BoardPosition(1, 3))
+                }
+            });
+            _testData.Add(new object[]
+            {
+                // 全部黒で終了
+                new List<(Piece piece, BoardPosition position)>
+                {
+                    (Piece.CreateBlack(), new BoardPosition(5, 4)),
+                    (Piece.CreateWhite(), new BoardPosition(3, 5)),
+                    (Piece.CreateBlack(), new BoardPosition(2, 4)),
+                    (Piece.CreateWhite(), new BoardPosition(5, 3)),
+                    (Piece.CreateBlack(), new BoardPosition(4, 6)),
+                    (Piece.CreateWhite(), new BoardPosition(5, 5)),
+                    (Piece.CreateBlack(), new BoardPosition(6, 4)),
+                    (Piece.CreateWhite(), new BoardPosition(4, 5)),
+                    (Piece.CreateBlack(), new BoardPosition(4, 2))
+                }
+            });
+            _testData.Add(new object[]
+            {
+                // スキップありフルテスト
+                new List<(Piece piece, BoardPosition position)>
+                {
+                    (Piece.CreateBlack(), new BoardPosition(4, 5)),
+                    (Piece.CreateWhite(), new BoardPosition(5, 3)),
+                    (Piece.CreateBlack(), new BoardPosition(4, 2)),
+                    (Piece.CreateWhite(), new BoardPosition(3, 5)),
+                    (Piece.CreateBlack(), new BoardPosition(2, 5)),
+                    (Piece.CreateWhite(), new BoardPosition(2, 4)),
+                    (Piece.CreateBlack(), new BoardPosition(3, 2)),
+                    (Piece.CreateWhite(), new BoardPosition(2, 3)),
+                    (Piece.CreateBlack(), new BoardPosition(5, 4)),
+                    (Piece.CreateWhite(), new BoardPosition(5, 5)),
+                    (Piece.CreateBlack(), new BoardPosition(6, 4)),
+                    (Piece.CreateWhite(), new BoardPosition(3, 6)),
+                    (Piece.CreateBlack(), new BoardPosition(2, 6)),
+                    (Piece.CreateWhite(), new BoardPosition(4, 6)),
+                    (Piece.CreateBlack(), new BoardPosition(1, 4)),
+                    (Piece.CreateWhite(), new BoardPosition(1, 5)),
+                    (Piece.CreateBlack(), new BoardPosition(3, 7)),
+                    (Piece.CreateWhite(), new BoardPosition(2, 2)),
+                    (Piece.CreateBlack(), new BoardPosition(1, 3)),
+                    (Piece.CreateWhite(), new BoardPosition(0, 3)),
+                    (Piece.CreateBlack(), new BoardPosition(0, 5)),
+                    (Piece.CreateWhite(), new BoardPosition(2, 7)),
+                    (Piece.CreateBlack(), new BoardPosition(1, 2)),
+                    (Piece.CreateWhite(), new BoardPosition(4, 7)),
+                    (Piece.CreateBlack(), new BoardPosition(1, 6)),
+                    (Piece.CreateWhite(), new BoardPosition(3, 1)),
+                    (Piece.CreateBlack(), new BoardPosition(2, 1)),
+                    (Piece.CreateWhite(), new BoardPosition(1, 7)),
+                    (Piece.CreateBlack(), new BoardPosition(4, 1)),
+                    (Piece.CreateWhite(), new BoardPosition(5, 7)),
+                    (Piece.CreateBlack(), new BoardPosition(5, 6)),
+                    (Piece.CreateWhite(), new BoardPosition(6, 7)),
+                    (Piece.CreateBlack(), new BoardPosition(6, 6)),
+                    (Piece.CreateWhite(), new BoardPosition(0, 2)),
+                    (Piece.CreateBlack(), new BoardPosition(0, 4)),
+                    (Piece.CreateWhite(), new BoardPosition(0, 6)),
+                    (Piece.CreateWhite(), new BoardPosition(0, 7)),
+                    (Piece.CreateWhite(), new BoardPosition(7, 7)),
+                    (Piece.CreateBlack(), new BoardPosition(7, 6)),
+                    (Piece.CreateWhite(), new BoardPosition(6, 5)),
+                    (Piece.CreateWhite(), new BoardPosition(1, 1)),
+                    (Piece.CreateBlack(), new BoardPosition(0, 1)),
+                    (Piece.CreateWhite(), new BoardPosition(3, 0)),
+                    (Piece.CreateBlack(), new BoardPosition(2, 0)),
+                    (Piece.CreateWhite(), new BoardPosition(0, 0)),
+                    (Piece.CreateBlack(), new BoardPosition(4, 0)),
+                    (Piece.CreateWhite(), new BoardPosition(7, 3)),
+                    (Piece.CreateBlack(), new BoardPosition(7, 5)),
+                    (Piece.CreateWhite(), new BoardPosition(1, 0)),
+                    (Piece.CreateWhite(), new BoardPosition(5, 0)),
+                    (Piece.CreateBlack(), new BoardPosition(5, 1)),
+                    (Piece.CreateWhite(), new BoardPosition(7, 4)),
+                    (Piece.CreateBlack(), new BoardPosition(6, 3)),
+                    (Piece.CreateWhite(), new BoardPosition(7, 2)),
+                    (Piece.CreateWhite(), new BoardPosition(6, 1)),
+                    (Piece.CreateBlack(), new BoardPosition(6, 0)),
+                    (Piece.CreateWhite(), new BoardPosition(5, 2)),
+                    (Piece.CreateBlack(), new BoardPosition(6, 2)),
+                    (Piece.CreateWhite(), new BoardPosition(7, 1)),
+                    (Piece.CreateWhite(), new BoardPosition(7, 0))
+                }
             });
         }
     }
