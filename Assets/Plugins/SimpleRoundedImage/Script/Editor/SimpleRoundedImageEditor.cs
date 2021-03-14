@@ -1,29 +1,24 @@
-﻿using System.Linq;
-using UnityEngine;
-using UnityEditor.AnimatedValues;
-using UnityEngine.UI;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.UI;
 
-namespace GFramework
+namespace Plugins.SimpleRoundedImage.Script.Editor
 {
     [CustomEditor(typeof(SimpleRoundedImage), true)]
     //[CanEditMultipleObjects]
     public class SimpleRoundedImageEditor : ImageEditor
     {
-
-        SerializedProperty m_Radius;
-        SerializedProperty m_TriangleNum;
-        SerializedProperty m_Sprite;
+        private SerializedProperty _radius;
+        private SerializedProperty _triangleNum;
+        private SerializedProperty _sprite;
 
 
         protected override void OnEnable()
         {
             base.OnEnable();
 
-            m_Sprite = serializedObject.FindProperty("m_Sprite");
-            m_Radius = serializedObject.FindProperty("Radius");
-            m_TriangleNum = serializedObject.FindProperty("TriangleNum");
+            _sprite = serializedObject.FindProperty("m_Sprite");
+            _radius = serializedObject.FindProperty("radius");
+            _triangleNum = serializedObject.FindProperty("triangleNum");
 
         }
         public override void OnInspectorGUI()
@@ -33,12 +28,12 @@ namespace GFramework
             SpriteGUI();
             AppearanceControlsGUI();
             RaycastControlsGUI();
-            bool showNativeSize = m_Sprite.objectReferenceValue != null;
+            var showNativeSize = _sprite.objectReferenceValue != null;
             m_ShowNativeSize.target = showNativeSize;
             NativeSizeButtonGUI();
-            EditorGUILayout.PropertyField(m_Radius);
-            EditorGUILayout.PropertyField(m_TriangleNum);
-            this.serializedObject.ApplyModifiedProperties();
+            EditorGUILayout.PropertyField(_radius);
+            EditorGUILayout.PropertyField(_triangleNum);
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }

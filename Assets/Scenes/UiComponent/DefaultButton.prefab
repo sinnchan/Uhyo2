@@ -80,8 +80,8 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  Radius: 40
-  TriangleNum: 10
+  radius: 40
+  triangleNum: 20
 --- !u!114 &675913808201150062
 MonoBehaviour:
   m_ObjectHideFlags: 0

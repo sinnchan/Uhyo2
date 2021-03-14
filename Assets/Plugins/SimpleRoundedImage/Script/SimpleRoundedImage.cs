@@ -1,113 +1,113 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Sprites;
-using System.Collections.Generic;
+using UnityEngine.UI;
 
-namespace GFramework
+namespace Plugins.SimpleRoundedImage.Script
 {
     public class SimpleRoundedImage : Image
     {
 
-        //每个角最大的三角形数，一般5-8个就有不错的圆角效果，设置Max防止不必要的性能浪费
-        const int MaxTriangleNum = 20;
-        const int MinTriangleNum = 1;
+        //コーナーごとの三角形の最大数、通常は5～8個で良好な丸め効果が得られますが、
+        //不要なパフォーマンスの浪費を防ぐためにMaxを設定してください。
+        private const int MaxTriangleNum = 20;
+        private const int MinTriangleNum = 1;
 
-        public float Radius;
-        //使用几个三角形去填充每个角的四分之一圆
+        public float radius;
+        //いくつかの三角形を使って、各コーナーの4分の1を円で埋める。
         [Range(MinTriangleNum, MaxTriangleNum)]
-        public int TriangleNum;
+        public int triangleNum;
 
         protected override void OnPopulateMesh(VertexHelper vh)
         {
-            Vector4 v = GetDrawingDimensions(false);
-            Vector4 uv = overrideSprite != null ? DataUtility.GetOuterUV(overrideSprite) : Vector4.zero;
+            var v = GetDrawingDimensions(false);
+            var uv = overrideSprite != null ? DataUtility.GetOuterUV(overrideSprite) : Vector4.zero;
 
             var color32 = color;
             vh.Clear();
-            //对radius的值做限制，必须在0-较小的边的1/2的范围内
-            float radius = Radius;
-            if (radius > (v.z - v.x) / 2) radius = (v.z - v.x) / 2;
-            if (radius > (v.w - v.y) / 2) radius = (v.w - v.y) / 2;
-            if (radius < 0) radius = 0;
-            //计算出uv中对应的半径值坐标轴的半径
-            float uvRadiusX = radius / (v.z - v.x);
-            float uvRadiusY = radius / (v.w - v.y);
+            //半径の値に制限を設け、小さい方の辺の0～1/2の範囲にします。
+            var rad = radius;
+            if (rad > (v.z - v.x) / 2) rad = (v.z - v.x) / 2;
+            if (rad > (v.w - v.y) / 2) rad = (v.w - v.y) / 2;
+            if (rad < 0) rad = 0;
+            //uvの半径の値に対応する座標軸の半径を計算する
+            var uvRadiusX = rad / (v.z - v.x);
+            var uvRadiusY = rad / (v.w - v.y);
 
             //0，1
-            vh.AddVert(new Vector3(v.x, v.w - radius), color32, new Vector2(uv.x, uv.w - uvRadiusY));
-            vh.AddVert(new Vector3(v.x, v.y + radius), color32, new Vector2(uv.x, uv.y + uvRadiusY));
+            vh.AddVert(new Vector3(v.x, v.w - rad), color32, new Vector2(uv.x, uv.w - uvRadiusY));
+            vh.AddVert(new Vector3(v.x, v.y + rad), color32, new Vector2(uv.x, uv.y + uvRadiusY));
 
             //2，3，4，5
-            vh.AddVert(new Vector3(v.x + radius, v.w), color32, new Vector2(uv.x + uvRadiusX, uv.w));
-            vh.AddVert(new Vector3(v.x + radius, v.w - radius), color32, new Vector2(uv.x + uvRadiusX, uv.w - uvRadiusY));
-            vh.AddVert(new Vector3(v.x + radius, v.y + radius), color32, new Vector2(uv.x + uvRadiusX, uv.y + uvRadiusY));
-            vh.AddVert(new Vector3(v.x + radius, v.y), color32, new Vector2(uv.x + uvRadiusX, uv.y));
+            vh.AddVert(new Vector3(v.x + rad, v.w), color32, new Vector2(uv.x + uvRadiusX, uv.w));
+            vh.AddVert(new Vector3(v.x + rad, v.w - rad), color32, new Vector2(uv.x + uvRadiusX, uv.w - uvRadiusY));
+            vh.AddVert(new Vector3(v.x + rad, v.y + rad), color32, new Vector2(uv.x + uvRadiusX, uv.y + uvRadiusY));
+            vh.AddVert(new Vector3(v.x + rad, v.y), color32, new Vector2(uv.x + uvRadiusX, uv.y));
 
             //6，7，8，9
-            vh.AddVert(new Vector3(v.z - radius, v.w), color32, new Vector2(uv.z - uvRadiusX, uv.w));
-            vh.AddVert(new Vector3(v.z - radius, v.w - radius), color32, new Vector2(uv.z - uvRadiusX, uv.w - uvRadiusY));
-            vh.AddVert(new Vector3(v.z - radius, v.y + radius), color32, new Vector2(uv.z - uvRadiusX, uv.y + uvRadiusY));
-            vh.AddVert(new Vector3(v.z - radius, v.y), color32, new Vector2(uv.z - uvRadiusX, uv.y));
+            vh.AddVert(new Vector3(v.z - rad, v.w), color32, new Vector2(uv.z - uvRadiusX, uv.w));
+            vh.AddVert(new Vector3(v.z - rad, v.w - rad), color32, new Vector2(uv.z - uvRadiusX, uv.w - uvRadiusY));
+            vh.AddVert(new Vector3(v.z - rad, v.y + rad), color32, new Vector2(uv.z - uvRadiusX, uv.y + uvRadiusY));
+            vh.AddVert(new Vector3(v.z - rad, v.y), color32, new Vector2(uv.z - uvRadiusX, uv.y));
 
             //10，11
-            vh.AddVert(new Vector3(v.z, v.w - radius), color32, new Vector2(uv.z, uv.w - uvRadiusY));
-            vh.AddVert(new Vector3(v.z, v.y + radius), color32, new Vector2(uv.z, uv.y + uvRadiusY));
+            vh.AddVert(new Vector3(v.z, v.w - rad), color32, new Vector2(uv.z, uv.w - uvRadiusY));
+            vh.AddVert(new Vector3(v.z, v.y + rad), color32, new Vector2(uv.z, uv.y + uvRadiusY));
 
-            //左边的矩形
+            //左側の長方形
             vh.AddTriangle(1, 0, 3);
             vh.AddTriangle(1, 3, 4);
-            //中间的矩形
+            //中間の長方形
             vh.AddTriangle(5, 2, 6);
             vh.AddTriangle(5, 6, 9);
-            //右边的矩形
+            //右側の長方形
             vh.AddTriangle(8, 7, 10);
             vh.AddTriangle(8, 10, 11);
 
-            //开始构造四个角
-            List<Vector2> vCenterList = new List<Vector2>();
-            List<Vector2> uvCenterList = new List<Vector2>();
-            List<int> vCenterVertList = new List<int>();
+            //四隅の組み立てを始める
+            var vCenterList = new List<Vector2>();
+            var uvCenterList = new List<Vector2>();
+            var vCenterVertList = new List<int>();
 
-            //右上角的圆心
-            vCenterList.Add(new Vector2(v.z - radius, v.w - radius));
+            //右上の円の中心
+            vCenterList.Add(new Vector2(v.z - rad, v.w - rad));
             uvCenterList.Add(new Vector2(uv.z - uvRadiusX, uv.w - uvRadiusY));
             vCenterVertList.Add(7);
 
-            //左上角的圆心
-            vCenterList.Add(new Vector2(v.x + radius, v.w - radius));
+            //左上の円の中心
+            vCenterList.Add(new Vector2(v.x + rad, v.w - rad));
             uvCenterList.Add(new Vector2(uv.x + uvRadiusX, uv.w - uvRadiusY));
             vCenterVertList.Add(3);
 
-            //左下角的圆心
-            vCenterList.Add(new Vector2(v.x + radius, v.y + radius));
+            //左下の円の中心
+            vCenterList.Add(new Vector2(v.x + rad, v.y + rad));
             uvCenterList.Add(new Vector2(uv.x + uvRadiusX, uv.y + uvRadiusY));
             vCenterVertList.Add(4);
 
-            //右下角的圆心
-            vCenterList.Add(new Vector2(v.z - radius, v.y + radius));
+            //右下の円の中心
+            vCenterList.Add(new Vector2(v.z - rad, v.y + rad));
             uvCenterList.Add(new Vector2(uv.z - uvRadiusX, uv.y + uvRadiusY));
             vCenterVertList.Add(8);
 
-            //每个三角形的顶角
-            float degreeDelta = (float)(Mathf.PI / 2 / TriangleNum);
-            //当前的角度
+            //各三角形の頂角
+            var degreeDelta = (Mathf.PI / 2 / triangleNum);
+            //現在の状況
             float curDegree = 0;
 
-            for (int i = 0; i < vCenterVertList.Count; i++)
+            for (var i = 0; i < vCenterVertList.Count; i++)
             {
-                int preVertNum = vh.currentVertCount;
-                for (int j = 0; j <= TriangleNum; j++)
+                var preVertNum = vh.currentVertCount;
+                for (var j = 0; j <= triangleNum; j++)
                 {
-                    float cosA = Mathf.Cos(curDegree);
-                    float sinA = Mathf.Sin(curDegree);
-                    Vector3 vPosition = new Vector3(vCenterList[i].x + cosA * radius, vCenterList[i].y + sinA * radius);
-                    Vector3 uvPosition = new Vector2(uvCenterList[i].x + cosA * uvRadiusX, uvCenterList[i].y + sinA * uvRadiusY);
+                    var cosA = Mathf.Cos(curDegree);
+                    var sinA = Mathf.Sin(curDegree);
+                    var vPosition = new Vector3(vCenterList[i].x + cosA * rad, vCenterList[i].y + sinA * rad);
+                    var uvPosition = new Vector2(uvCenterList[i].x + cosA * uvRadiusX, uvCenterList[i].y + sinA * uvRadiusY);
                     vh.AddVert(vPosition, color32, uvPosition);
                     curDegree += degreeDelta;
                 }
                 curDegree -= degreeDelta;
-                for (int j = 0; j <= TriangleNum - 1; j++)
+                for (var j = 0; j <= triangleNum - 1; j++)
                 {
                     vh.AddTriangle(vCenterVertList[i], preVertNum + j + 1, preVertNum + j);
                 }
@@ -117,12 +117,12 @@ namespace GFramework
         private Vector4 GetDrawingDimensions(bool shouldPreserveAspect)
         {
             var padding = overrideSprite == null ? Vector4.zero : DataUtility.GetPadding(overrideSprite);
-            Rect r = GetPixelAdjustedRect();
+            var r = GetPixelAdjustedRect();
             var size = overrideSprite == null ? new Vector2(r.width, r.height) : new Vector2(overrideSprite.rect.width, overrideSprite.rect.height);
             //Debug.Log(string.Format("r:{2}, size:{0}, padding:{1}", size, padding, r));
 
-            int spriteW = Mathf.RoundToInt(size.x);
-            int spriteH = Mathf.RoundToInt(size.y);
+            var spriteW = Mathf.RoundToInt(size.x);
+            var spriteH = Mathf.RoundToInt(size.y);
 
             if (shouldPreserveAspect && size.sqrMagnitude > 0.0f)
             {
