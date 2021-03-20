@@ -1,7 +1,7 @@
-using Scripts.Main.Presentation.ViewModel;
+using Main.Presentation.ViewModel;
 using UnityEngine;
 
-namespace Scripts.Main.Presentation.View
+namespace Main.Presentation.View
 {
     public class HomeMenu : MonoBehaviour
     {

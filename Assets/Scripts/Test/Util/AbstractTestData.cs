@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Scripts.Test.Util
+namespace Test.Util
 {
     public abstract class AbstractTestData : IEnumerable<object[]>
     {

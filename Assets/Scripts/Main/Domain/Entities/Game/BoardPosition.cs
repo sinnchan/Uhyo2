@@ -1,7 +1,7 @@
 using System;
 using NLog;
 
-namespace Scripts.Main.Domain.Entities.Game
+namespace Main.Domain.Entities.Game
 {
     /// <summary>
     ///     オセロの盤面を想定したPosition指定クラス。

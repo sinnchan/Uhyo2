@@ -1,6 +1,6 @@
-using Scripts.Main.Domain.Entities.Game;
+using Main.Domain.Entities.Game;
 
-namespace Scripts.Test.Util
+namespace Test.Util
 {
     public static class TestUtil
     {

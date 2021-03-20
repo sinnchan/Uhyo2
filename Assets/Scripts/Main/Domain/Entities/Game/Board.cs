@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Scripts.Main.Domain.Entities.Game
+namespace Main.Domain.Entities.Game
 {
     public class Board
     {

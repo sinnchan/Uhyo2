@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using Scripts.Main.Domain.Entities.Game;
-using Scripts.Test.Util;
+using Main.Domain.Entities.Game;
+using Test.Util;
 using Xunit;
-using static Scripts.Test.Util.TestUtil;
+using static Test.Util.TestUtil;
 
 namespace Scripts.Test.Domain.Entity.Game
 {

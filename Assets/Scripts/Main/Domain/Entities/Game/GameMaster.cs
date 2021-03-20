@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Scripts.Main.Domain.Entities.Game
+namespace Main.Domain.Entities.Game
 {
     public class GameMaster
     {

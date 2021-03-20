@@ -1,4 +1,4 @@
-namespace Scripts.Main.Domain.Entities
+namespace Main.Domain.Entities
 {
     public enum PlayMode
     {

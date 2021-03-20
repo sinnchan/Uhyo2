@@ -1,8 +1,8 @@
 using System;
-using Scripts.Main.Domain.Entities.Game;
+using Main.Domain.Entities.Game;
 using Xunit;
 
-namespace Scripts.Test.Domain.Entity.Game
+namespace Test.Domain.Entity.Game
 {
     public class TestBoard
     {

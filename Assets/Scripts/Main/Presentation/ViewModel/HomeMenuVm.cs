@@ -1,6 +1,7 @@
+using Main.Domain.Entities;
 using Scripts.Main.Domain.Entities;
 
-namespace Scripts.Main.Presentation.ViewModel
+namespace Main.Presentation.ViewModel
 {
     public class HomeMenuVm
     {

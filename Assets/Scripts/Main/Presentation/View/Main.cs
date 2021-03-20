@@ -1,6 +1,7 @@
+using Scripts.Main.Presentation.View;
 using UnityEditor;
 
-namespace Scripts.Main.Presentation.View
+namespace Main.Presentation.View
 {
     [InitializeOnLoad]
     public class Main

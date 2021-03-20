@@ -1,4 +1,4 @@
-namespace Scripts.Main.Domain.Entities.Game
+namespace Main.Domain.Entities.Game
 {
     public class Position
     {

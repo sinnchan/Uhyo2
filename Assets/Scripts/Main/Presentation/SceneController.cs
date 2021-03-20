@@ -1,8 +1,9 @@
 using System;
+using Main.Domain.Entities;
 using Scripts.Main.Domain.Entities;
 using UniRx;
 
-namespace Scripts.Main.Presentation
+namespace Main.Presentation
 {
     public sealed class SceneController
     {

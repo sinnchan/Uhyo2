@@ -1,4 +1,6 @@
 using System;
+using Main.Domain.Entities;
+using Main.Presentation;
 using Scripts.Main.Domain.Entities;
 using UniRx;
 using UnityEngine;
